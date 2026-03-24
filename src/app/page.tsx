@@ -30,18 +30,26 @@ const fetchProducts = async (page: number): Promise<ProductResponse> => {
 };
 
 export default function Properties() {
-
-
+  // Page state is created
   const [page, setPage] = useState(1);
+  
 
+  // useQuery runs
   const { data, isLoading, error, isFetching } = useQuery<ProductResponse>({
-    
-    queryKey: ["products", page], // 🔥 dynamic cache per page
+
+//  dynamic cache per page
+    queryKey: ["products", page],
+     
+
     queryFn: () => fetchProducts(page),
 
-    // ✅ v5 way (replaces keepPreviousData)
+    
+    // ✅ Placeholder data
     placeholderData: (prev) => prev,
   });
+
+  
+  const totalPages = Math.ceil((data?.total || 0) / 10);
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -67,7 +75,8 @@ export default function Properties() {
         </button>
 
         <button
-          onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => setPage((prev) => prev + 1)}
+  disabled={page >= totalPages}
           style={{ marginLeft: "10px" }}
         >
           Next ➡
